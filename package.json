@@ -1,0 +1,24 @@
+{
+  "name": "loopback-denormalize",
+  "version": "0.0.1",
+  "description": "Module for denormalizing association attributes in loopback mongodb models ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jbmarchetti/loopback-denormalize.git"
+  },
+  "keywords": [
+    "loopback",
+    "mongodb",
+    "nodeJs"
+  ],
+  "author": "Jean Baptiste Marchetti",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jbmarchetti/loopback-denormalize/issues"
+  },
+  "homepage": "https://github.com/jbmarchetti/loopback-denormalize"
+}
