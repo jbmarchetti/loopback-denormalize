@@ -58,10 +58,15 @@ module.exports = function(object, toDenormalize){
 
         }
 
+        var my_data = Object.keys(denormalizedJson).map(function (key) {
+          return denormalizedJson[key];
+        });
+
+
         if (ctx.isNewInstance)
-        ctx.instance['_'+fieldName] = denormalizedJson;
+        ctx.instance['_'+fieldName] = my_data;
         else
-        ctx.data['_'+fieldName] = denormalizedJson;
+        ctx.data['_'+fieldName] = my_data;
 
       }
 
