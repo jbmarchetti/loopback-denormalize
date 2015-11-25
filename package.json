@@ -1,6 +1,6 @@
 {
   "name": "loopback-denormalize",
-  "version": "0.0.4",
+  "version": "0.0.3",
   "description": "Module for denormalizing association attributes in loopback mongodb models ",
   "main": "index.js",
   "scripts": {
