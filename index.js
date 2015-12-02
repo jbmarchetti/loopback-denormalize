@@ -22,9 +22,9 @@ module.exports = function(object, toDenormalize){
     },
     function (err, instance)
     {
+
       if (err || !instance)
       return next();
-
 
       var obj = instance.toJSON();
       for (var fieldName in toDenormalize)
@@ -54,19 +54,25 @@ module.exports = function(object, toDenormalize){
             if (obj[fieldName])
             denormalizedJson[attr] = obj[fieldName][attr];
 
+
           }
 
         }
 
-        var my_data = Object.keys(denormalizedJson).map(function (key) {
-          return denormalizedJson[key];
-        });
-
+        if (toDenormalize[fieldName].type === 'hasMany')
+          var my_data = Object.keys(denormalizedJson).map(function (key) {
+            return denormalizedJson[key];
+          });
+          else {
+            var my_data  = denormalizedJson;
+          }
 
         if (ctx.isNewInstance)
         ctx.instance['_'+fieldName] = my_data;
         else
         ctx.data['_'+fieldName] = my_data;
+
+
 
       }
 
