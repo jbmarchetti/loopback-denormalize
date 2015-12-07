@@ -1,21 +1,11 @@
 module.exports = function(object, toDenormalize){
 
-  object.observe('before save', function denormalize(ctx, next) {
-    var toDenormalizeValues= '';
-    var denormalizedJson= {};
-
-    var id = '';
-
-    if (ctx.isNewInstance)
-    id = ctx.instance.id;
-    else
-    id = ctx.data.id;
-
+  object.refresh = function(id, next, ctx)
+  {
     var includes= [];
-
+    var jsonDatas = {};
     for (var _class in toDenormalize)
     includes.push(_class);
-
 
     object.findById(id, {
       include: includes
@@ -53,32 +43,64 @@ module.exports = function(object, toDenormalize){
           {
             if (obj[fieldName])
             denormalizedJson[attr] = obj[fieldName][attr];
-
-
           }
 
         }
 
         if (toDenormalize[fieldName].type === 'hasMany')
-          var my_data = Object.keys(denormalizedJson).map(function (key) {
-            return denormalizedJson[key];
-          });
-          else {
-            var my_data  = denormalizedJson;
-          }
+        var my_data = Object.keys(denormalizedJson).map(function (key) {
+          return denormalizedJson[key];
+        });
+        else {
+          var my_data  = denormalizedJson;
+        }
 
-        if (ctx.isNewInstance)
-        ctx.instance['_'+fieldName] = my_data;
+        if (ctx)
+        {
+          if (ctx.isNewInstance)
+          ctx.instance['_'+fieldName] = my_data;
+          else(ctx.data)
+          ctx.data['_'+fieldName] = my_data;
+        }
         else
-        ctx.data['_'+fieldName] = my_data;
-
-
-
+          jsonDatas['_'+fieldName] = my_data;
       }
 
-      next();
+      if (!ctx)
+      instance.updateAttributes(jsonDatas);
 
+      next();
     });
+  };
+
+  object.remoteMethod(
+    'refresh',
+    {
+      accepts: [
+        {arg: 'id', type: 'string', required: true}
+      ],
+      http: {path: '/denormalize/:id', verb: 'post'}
+    }
+  );
+
+  object.observe('before save', function denormalize(ctx, next) {
+    var toDenormalizeValues= '';
+    var denormalizedJson= {};
+
+    var id = '';
+
+    if (ctx.isNewInstance)
+    id = ctx.instance.id;
+    else
+    id = ctx.data.id;
+
+
+    if (id)
+    object.refresh(id, next, ctx);
+    else {
+      next();
+    }
+
 
   });
 };
